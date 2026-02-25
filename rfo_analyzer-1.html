@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAUSAL — FAR/DFARS Revolutionary Overhaul Analyzer | Anthem Federal</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CLASSIFICATION BANNER & ROOT
+   ============================================================ */
+:root {
+  --bg: #0b0e13;
+  --surface: #0f1319;
+  --surface2: #151a22;
+  --surface3: #1a2029;
+  --border: #232b38;
+  --border-bright: #2f3a4d;
+  --text: #f0f2f5;
+  --text-high: #ffffff;
+  --text-mid: #b0b8c8;
+  --text-dim: #6b7a94;
+  --text-muted: #3d4b63;
+  --accent: #00e676;
+  --accent-bright: #69f0ae;
+  --accent-dim: #00a152;
+  --accent-glow: rgba(0, 230, 118, 0.06);
+  --accent-glow-strong: rgba(0, 230, 118, 0.12);
+  --warning: #ffab00;
+  --danger: #ff1744;
+  --danger-dim: rgba(255, 23, 68, 0.1);
+  --info: #448aff;
+  --gold: #ffd740;
+  --unclass-green: #00c853;
+  --mono: 'IBM Plex Mono', 'Consolas', monospace;
+  --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --serif: 'IBM Plex Serif', Georgia, serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* UNCLASSIFIED Banner — Top & Bottom */
+.classification-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--unclass-green);
+  color: #000;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 6px 0;
+  text-transform: uppercase;
+  border-bottom: 2px solid #009624;
+  user-select: none;
+}
+
+.classification-banner-bottom {
+  background: var(--unclass-green);
+  color: #000;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 6px 0;
+  text-transform: uppercase;
+  border-top: 2px solid #009624;
+  user-select: none;
+}
+
+.gov-use-line {
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* Subtle scan-line overlay for that DoD terminal feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 230, 118, 0.008) 2px,
+    rgba(0, 230, 118, 0.008) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+.app { max-width: 1060px; margin: 0 auto; padding: 36px 28px 48px; position: relative; z-index: 1; }
+
+/* ============================================================
+   HEADER — DoD Official Look
+   ============================================================ */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+
+.header-left { flex: 1; }
+
+.header-seal {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+/* Anthem Federal brand bar */
+.anthem-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.anthem-logo-text {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+}
+
+.anthem-logo-text .anthem-accent {
+  color: var(--accent);
+}
+
+/* CSS-only DoD-style seal/shield */
+.seal-icon {
+  width: 56px;
+  height: 56px;
+  border: 2.5px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at 50% 40%, rgba(0,230,118,0.06), transparent 70%);
+}
+
+.seal-icon::before {
+  content: '★';
+  font-size: 22px;
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(0,230,118,0.3);
+}
+
+.seal-icon::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(0,230,118,0.2);
+  border-radius: 50%;
+}
+
+.app-title {
+  font-family: var(--sans);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-high);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.app-title .accent { color: var(--accent); }
+
+.app-subtitle {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.app-desc {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.header-right {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.9;
+  min-width: 200px;
+}
+
+.header-right .live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0,230,118,0.5);
+  animation: livePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(0,230,118,0.4); opacity: 1; }
+  50% { box-shadow: 0 0 12px rgba(0,230,118,0.7); opacity: 0.7; }
+}
+
+.ref-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(0,230,118,0.15);
+  border-radius: 3px;
+  color: var(--accent);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   SEARCH BAR — Pulsing Green Outline
+   ============================================================ */
+.search-container {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 20px 24px 20px 56px;
+  background: var(--surface2);
+  border: 2px solid var(--accent-dim);
+  border-radius: 6px;
+  color: var(--text-high);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: background 0.2s;
+  animation: searchPulse 3s ease-in-out infinite;
+}
+
+@keyframes searchPulse {
+  0%, 100% {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 0 rgba(0,230,118,0), 0 0 20px rgba(0,230,118,0.03);
+  }
+  50% {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(0,230,118,0.08), 0 0 30px rgba(0,230,118,0.06);
+  }
+}
+
+.search-bar:focus {
+  animation: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0,230,118,0.12), 0 0 40px rgba(0,230,118,0.08);
+  background: var(--surface3);
+}
+
+.search-bar::placeholder { color: var(--text-muted); font-weight: 300; }
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 3px rgba(0,230,118,0.3));
+}
+
+.search-hints {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.hint-chip {
+  padding: 5px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.hint-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+/* ============================================================
+   STATUS BAR
+   ============================================================ */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+}
+
+.status-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--accent); box-shadow: 0 0 4px rgba(0,230,118,0.4); }
+.dot-gold { background: var(--gold); }
+.dot-blue { background: var(--info); }
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.loading-spinner {
+  width: 36px; height: 36px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  animation: fadeText 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeText { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* ============================================================
+   SECTION LABELS
+   ============================================================ */
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 44px;
+}
+
+/* ============================================================
+   SUGGESTION CARDS
+   ============================================================ */
+.suggestion-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 22px 26px;
+  transition: all 0.2s;
+  animation: cardIn 0.35s ease-out both;
+  position: relative;
+}
+
+.suggestion-card:hover {
+  border-color: var(--border-bright);
+  background: var(--surface2);
+}
+
+.suggestion-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+}
+
+.card-high::before { background: var(--danger); }
+.card-medium::before { background: var(--warning); }
+.card-low::before { background: var(--info); }
+.card-optimize::before { background: var(--accent); }
+.card-critical::before { background: var(--danger); box-shadow: 0 0 8px rgba(255,23,68,0.3); }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.card-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 28px;
+}
+
+.card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.card-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.badge-critical { background: rgba(255,23,68,0.15); color: var(--danger); border: 1px solid rgba(255,23,68,0.25); }
+.badge-high { background: rgba(255,23,68,0.1); color: #ff5252; border: 1px solid rgba(255,23,68,0.18); }
+.badge-medium { background: rgba(255,171,0,0.1); color: var(--warning); border: 1px solid rgba(255,171,0,0.18); }
+.badge-low { background: rgba(68,138,255,0.1); color: var(--info); border: 1px solid rgba(68,138,255,0.18); }
+.badge-optimize { background: var(--accent-glow-strong); color: var(--accent); border: 1px solid rgba(0,230,118,0.2); }
+.badge-eo { background: rgba(255,215,64,0.1); color: var(--gold); border: 1px solid rgba(255,215,64,0.18); }
+.badge-rfo { background: rgba(255,255,255,0.05); color: var(--text-mid); border: 1px solid var(--border-bright); }
+
+.card-title {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text-high);
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.card-clauses {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.clause-tag {
+  padding: 3px 10px;
+  background: rgba(0,230,118,0.04);
+  border: 1px solid rgba(0,230,118,0.12);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-bright);
+}
+
+.clause-tag.tag-remove {
+  background: rgba(255,23,68,0.06);
+  border-color: rgba(255,23,68,0.15);
+  color: #ff5252;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,23,68,0.4);
+}
+
+.clause-tag.tag-modify {
+  background: rgba(255,171,0,0.06);
+  border-color: rgba(255,171,0,0.15);
+  color: var(--warning);
+}
+
+.card-body {
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.card-recommendation {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--accent-glow);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.card-recommendation strong {
+  color: var(--accent-bright);
+  font-weight: 600;
+}
+
+.card-impact {
+  margin-top: 12px;
+  display: flex;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+
+.impact-item { color: var(--text-muted); }
+.impact-item span { color: var(--text-mid); font-weight: 500; }
+
+/* ============================================================
+   AI RESPONSE BOX
+   ============================================================ */
+.ai-response {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+  animation: cardIn 0.3s ease-out;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+}
+
+.response-body {
+  color: var(--text-mid);
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+
+.response-body p { margin-bottom: 10px; }
+.response-body p:last-child { margin-bottom: 0; }
+
+.response-body .highlight {
+  color: var(--text-high);
+  font-weight: 600;
+}
+
+.response-body .eo-ref {
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  line-height: 1.8;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .app { padding: 24px 16px 40px; }
+  .app-title { font-size: 20px; }
+  .header { flex-direction: column; gap: 16px; }
+  .header-right { text-align: left; min-width: auto; }
+  .status-bar { gap: 10px; font-size: 10px; }
+  .search-bar { padding: 16px 16px 16px 48px; font-size: 13px; }
+  .card-title { font-size: 16px; }
+  .suggestion-card { padding: 18px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CLASSIFICATION BANNERS -->
+<div class="classification-banner">
+  UNCLASSIFIED // FOR OFFICIAL USE ONLY
+  <div class="gov-use-line">Authorized for distribution to DoD and U.S. Government agencies and Defense Industrial Base stakeholders</div>
+</div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <div class="anthem-brand">
+        <div class="header-seal">
+          <div class="seal-icon"></div>
+        </div>
+        <div class="anthem-logo-text"><span class="anthem-accent">Anthem</span> Federal</div>
+      </div>
+      <div class="app-subtitle">Anthem Federal · Revolutionary FAR Overhaul · Phase 2 Analysis</div>
+      <div class="app-title">CLAUSAL<span class="accent">.</span> Regulatory Burden <span class="accent">Analyzer</span></div>
+      <div class="app-desc">
+        AI-driven analysis engine identifying FAR/DFARS provisions that impede technology fielding velocity, 
+        restrict new vendor onboarding, and create barriers to wartime surge capacity — aligned with 
+        EO 14275, EO 14265, and the Secretary's Acquisition Transformation Strategy.
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-indicator"><span class="live-dot"></span> Analysis Engine Active</div>
+      <div>FAR Parts 1–53 Loaded</div>
+      <div>DFARS 201–253 Loaded</div>
+      <div>EO 14275 / EO 14265 Aligned</div>
+      <div class="ref-tag">RFO PHASE 2 INPUT</div>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-container">
+    <span class="search-icon">⌖</span>
+    <input
+      type="text"
+      class="search-bar"
+      id="searchInput"
+      placeholder="Query: 'barriers for new vendors', 'redundant clauses', 'startup onboarding burden', 'speed to lethality'..."
+      autocomplete="off"
+    />
+    <div class="search-hints">
+      <span class="hint-chip" onclick="runQuery('barriers for new vendors and startups')">new vendor barriers</span>
+      <span class="hint-chip" onclick="runQuery('redundant clauses for removal')">redundant clauses</span>
+      <span class="hint-chip" onclick="runQuery('speed to lethality')">speed to lethality</span>
+      <span class="hint-chip" onclick="runQuery('reduce onboarding burden')">onboarding burden</span>
+      <span class="hint-chip" onclick="runQuery('wartime surge capacity')">wartime surge</span>
+      <span class="hint-chip" onclick="runQuery('clauses not required by statute')">non-statutory clauses</span>
+      <span class="hint-chip" onclick="runQuery('technology modernization blockers')">tech modernization</span>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><span class="dot dot-green"></span> FAR: 53 Parts analyzed</div>
+    <div class="status-item"><span class="dot dot-green"></span> DFARS: 48 Parts analyzed</div>
+    <div class="status-item"><span class="dot dot-gold"></span> EO 14275 filter: Active</div>
+    <div class="status-item"><span class="dot dot-blue"></span> RFO Phase 1 deviations: Integrated</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsContainer">
+    <div class="loading-container" id="loadingState">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Analyzing regulatory burden against EO 14275 criteria...</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    RFO Phase 2 Regulatory Burden Analyzer · CLAUSAL by Anthem Federal<br>
+    FAR/DFARS data sourced from acquisition.gov<br>
+    Aligned with EO 14275 (Restoring Common Sense to Federal Procurement) · EO 14265 (Modernizing Defense Acquisitions)<br>
+    Secretary's Acquisition Transformation Strategy: Rebuilding the Arsenal of Freedom<br>
+    Submit input: osd.pentagon.ousd-a-s.mbx.dfars@mail.mil — Attn: Mr. John Tenaglia / Ms. Kimberly Ziegler
+  </div>
+</div>
+
+<!-- BOTTOM CLASSIFICATION BANNER -->
+<div class="classification-banner-bottom">
+  UNCLASSIFIED // FOR OFFICIAL USE ONLY
+</div>
+
+<script>
+// ================================================================
+// RFO PHASE 2 ANALYSIS ENGINE
+// Aligned with: EO 14275, EO 14265, Arsenal of Freedom Strategy
+// Focus: Lethality, new vendors, startup access, speed
+// ================================================================
+
+// ================================================================
+// TOP 10 SUGGESTIONS — Auto-load on page open
+// ================================================================
+const TOP_10_RFO = [
+  {
+    number: 1,
+    title: "Eliminate Non-Statutory Cost Accounting Standards (CAS) Requirements for New Entrants Below $50M",
+    clauses: ["FAR 52.230-2", "FAR 52.230-3", "FAR 52.230-6", "DFARS 252.230-7001"],
+    clauseAction: ["remove", "remove", "remove", "modify"],
+    description: "CAS compliance is the single largest barrier preventing commercial tech companies and startups from entering the defense market. Full CAS coverage requires establishing and maintaining separate cost accounting systems, disclosure statements, and audit-ready records — infrastructure that costs $500K–$2M to stand up and $200K+/yr to maintain. Most non-traditional vendors walk away at this point. CAS is not required by statute for contracts below $50M with adequate price competition.",
+    recommendation: "Remove CAS applicability for all new defense vendors with annual DoD revenue under $50M and for all competitively awarded firm-fixed-price contracts regardless of value. This single change would open the aperture to thousands of technology companies currently locked out of the defense industrial base. EO 14275 explicitly directs removal of FAR provisions not required by statute — CAS application to small competitive awards fits this mandate.",
+    impact: "critical",
+    eo_alignment: "EO 14275 §2: Remove provisions not required by statute · EO 14265 §3: Spur innovation in DIB",
+    timeSaved: "6-18 months vendor onboarding",
+    warfighterImpact: "Opens access to 10,000+ commercial tech firms"
+  },
+  {
+    number: 2,
+    title: "Collapse Cybersecurity Clause Stack into Single Unified Requirement",
+    clauses: ["FAR 52.204-21", "DFARS 252.204-7008", "DFARS 252.204-7012", "DFARS 252.204-7020", "DFARS 252.204-7021"],
+    clauseAction: ["remove", "remove", "modify", "modify", "modify"],
+    description: "Five overlapping cybersecurity clauses create a compliance maze. FAR 52.204-21 (basic safeguarding), DFARS -7008 (solicitation provision), -7012 (NIST 800-171 + incident reporting), -7020 (SPRS scoring), and -7021 (CMMC certification) form a cascading stack where each layer subsumes the previous. New vendors see five separate requirements and assume five separate compliance programs. The resulting confusion delays cleared technology from reaching warfighters by 12-24 months.",
+    recommendation: "Consolidate into a single DFARS clause: 'DoD Cybersecurity Requirements' with tiered applicability based on data sensitivity (Tier 1 = self-attestation for non-sensitive; Tier 2 = CMMC certification for sensitive unclassified; Tier 3 = enhanced requirements for classified support). Eliminate FAR 52.204-21 as redundant to any DFARS tier. Remove -7008 solicitation provision as duplicative. This reduces five compliance touchpoints to one, dramatically reducing the confusion barrier for non-traditional vendors.",
+    impact: "critical",
+    eo_alignment: "EO 14275 §2: Provisions essential to sound procurement only · Arsenal of Freedom: Maximize flexibility",
+    timeSaved: "40-60 hrs per contract + 6-12 mo vendor entry",
+    warfighterImpact: "Accelerates cleared tech deployment"
+  },
+  {
+    number: 3,
+    title: "Create 'Defense Innovation Fast Lane' — Exempt Commercial Items from 47 Non-Statutory Clauses",
+    clauses: ["FAR 12.301", "FAR 52.212-4", "FAR 52.212-5"],
+    clauseAction: ["modify", "modify", "modify"],
+    description: "Despite Congress establishing commercial item acquisition procedures to simplify buying (FAR Part 12), contracting officers routinely flow down 40-60+ clauses to commercial item contracts that are neither required by statute nor essential to sound procurement. A startup selling a $200K AI capability to DoD faces the same clause volume as a $2B weapons system integrator. EO 14275 directly targets this: provisions not required by statute or essential to sound procurement 'should be removed.'",
+    recommendation: "Establish by class deviation a 'Defense Innovation Fast Lane' for commercial item acquisitions under $25M: limit applicable clauses to the ~15 that are actually required by statute (Buy American, CAS exemption, Anti-Kickback, Equal Opportunity, etc.). Publish a definitive 'Fast Lane Clause List' that contracting officers cannot expand without written justification approved at the HCA level. This gives non-traditional vendors a clear, predictable, and manageable compliance envelope.",
+    impact: "critical",
+    eo_alignment: "EO 14275 §2: FAR should only contain provisions required by statute · EO 14265 §4: Eliminate unnecessary regulations",
+    timeSaved: "30-50 hrs per proposal for new vendors",
+    warfighterImpact: "New tech to field in months, not years"
+  },
+  {
+    number: 4,
+    title: "Eliminate Duplicative Ethics/Anti-Corruption Clause Cluster",
+    clauses: ["FAR 52.203-3", "FAR 52.203-5", "FAR 52.203-7", "FAR 52.203-12", "FAR 52.203-13"],
+    clauseAction: ["remove", "remove", "modify", "remove", "remove"],
+    description: "Five separate anti-corruption clauses (Gratuities, Contingent Fees, Anti-Kickback, Limitation on Payments to Influence, and Contractor Code of Ethics) address overlapping misconduct with separate compliance obligations, training requirements, and reporting mechanisms. The underlying prohibitions are already covered by federal criminal statutes (18 U.S.C. §201, 41 U.S.C. §8702, 10 U.S.C. §4651). Adding contractual clauses on top of criminal law creates administrative burden without additional deterrence.",
+    recommendation: "Consolidate into a single 'Contractor Integrity' clause referencing applicable statutes and requiring one unified compliance program for contracts over $5.5M. Below that threshold, a simple representation of legal compliance replaces all five clauses. This is directly responsive to EO 14275's mandate that the FAR 'should only contain provisions required by statute or essential to sound procurement.'",
+    impact: "high",
+    eo_alignment: "EO 14275 §2: Remove provisions that do not advance procurement objectives",
+    timeSaved: "15-20 hrs per contract cycle",
+    warfighterImpact: "Reduced barriers for new DIB entrants"
+  },
+  {
+    number: 5,
+    title: "Streamline Buy American Compliance for Ally-Nation Technology",
+    clauses: ["FAR 52.225-1", "FAR 52.225-5", "DFARS 252.225-7001", "DFARS 252.225-7036"],
+    clauseAction: ["modify", "modify", "modify", "modify"],
+    description: "Four overlapping Buy American / Trade Agreement / Balance of Payments clauses create a three-tier country-of-origin compliance structure. For cutting-edge defense technology — AI chips designed in the UK, optics manufactured in Japan, sensors built in Australia — the current regime penalizes procurement from our closest allies. In a peer adversary environment, the warfighter needs the best technology regardless of whether it was manufactured in Ohio or Osaka.",
+    recommendation: "Expand the 'Qualifying Country' list to include all AUKUS, Five Eyes, NATO, and bilateral defense cooperation partners as domestic equivalents for defense technology. Create a single 'Allied Source Certification' that replaces all four current clause compliance paths. For AUKUS-origin technology specifically, establish full reciprocal domestic treatment. This directly supports wartime surge capacity by expanding the industrial base to include allied production capacity.",
+    impact: "high",
+    eo_alignment: "EO 14265: Increase production capacity for wartime surge · Arsenal of Freedom: Allied industrial base integration",
+    timeSaved: "8-12 hrs per procurement + access to allied tech",
+    warfighterImpact: "Best available technology from allied nations"
+  },
+  {
+    number: 6,
+    title: "Remove Mandatory Subcontracting Plan for Firm-Fixed-Price Below $5M",
+    clauses: ["FAR 52.219-9", "FAR 52.219-14", "FAR 52.219-16"],
+    clauseAction: ["modify", "modify", "remove"],
+    description: "The current $750K threshold for Individual Subcontracting Plans forces small technology companies to create complex subcontracting plans, report on goals, and track spend across small business categories — even when they plan to perform 100% of work in-house. A 15-person AI startup winning a $1M contract has no meaningful subcontracting to plan, yet must produce a document that can take 20-40 hours and often requires consultant assistance at $5K-$15K.",
+    recommendation: "Raise the Individual Subcontracting Plan threshold to $5M for firm-fixed-price contracts. Below $5M, accept a simple good-faith representation of small business utilization intent. This removes a critical barrier for technology startups and small non-traditional vendors while preserving the statutory requirement for large contracts where subcontracting plans have meaningful impact.",
+    impact: "high",
+    eo_alignment: "EO 14275 §2: Essential to sound procurement only · EO 14265 §3: Spur innovation",
+    timeSaved: "20-40 hrs per contract for small vendors",
+    warfighterImpact: "Faster access to niche technology providers"
+  },
+  {
+    number: 7,
+    title: "Establish Presumption of Commerciality for Software and AI",
+    clauses: ["DFARS 252.227-7013", "DFARS 252.227-7014", "DFARS 252.227-7015"],
+    clauseAction: ["modify", "modify", "modify"],
+    description: "DFARS data rights clauses default to Government Purpose Rights or Unlimited Rights for non-commercial items, while commercial items receive limited license protection. Contracting officers frequently apply non-commercial data rights clauses (-7013, -7014) to software and AI solutions, even when developed with zero government funding. This terrifies venture-backed startups whose company valuation depends on IP protection. Many simply refuse to bid.",
+    recommendation: "Establish a rebuttable presumption of commerciality for all software, AI/ML models, and associated data. Default to DFARS 252.227-7015 (commercial data rights) for these categories. Require the contracting officer to make an affirmative written determination — approved at one level above the contracting officer — to apply non-commercial data rights to any software deliverable. This protects startup IP while preserving Government access rights when genuinely needed.",
+    impact: "critical",
+    eo_alignment: "EO 14265 §3: Spur innovation in DIB · Arsenal of Freedom: Attract non-traditional vendors",
+    timeSaved: "N/A — removes vendor-exit risk",
+    warfighterImpact: "Unlocks VC-backed AI/ML capabilities for DoD"
+  },
+  {
+    number: 8,
+    title: "Collapse Triple Supply Chain Prohibition into Single Clause",
+    clauses: ["FAR 52.204-23", "FAR 52.204-25", "FAR 52.204-27", "DFARS 252.204-7018"],
+    clauseAction: ["remove", "modify", "remove", "modify"],
+    description: "Four separate clauses prohibit procurement from covered entities (Huawei, ZTE, Kaspersky, ByteDance, etc.) with overlapping but slightly different scopes, representations, and compliance obligations. The underlying authority is largely Section 889 of the NDAA — one statute creating four clauses. New vendors see four separate prohibition regimes and assume four separate compliance processes.",
+    recommendation: "Consolidate into a single 'Prohibited Sources and Supply Chain Security' clause with a dynamically maintained covered entity list (updated by OUSD(A&S) rather than requiring rulemaking for each new prohibition). Reduce four representations to one. Reference the consolidated list in a single supply chain certification. This simplifies compliance for all vendors while actually improving security by creating a single, always-current prohibition framework.",
+    impact: "high",
+    eo_alignment: "EO 14275 §2: Only provisions essential to sound procurement · Arsenal of Freedom: Streamline processes",
+    timeSaved: "5-10 hrs per procurement action",
+    warfighterImpact: "Cleaner supply chain with less bureaucratic overhead"
+  },
+  {
+    number: 9,
+    title: "Replace 'Lowest Price Technically Acceptable' Default with Best Value for Technology",
+    clauses: ["FAR 15.101-2", "DFARS 215.101-2-70"],
+    clauseAction: ["modify", "modify"],
+    description: "LPTA source selection, while appropriate for commodities, systematically excludes innovative technology solutions that cost more but deliver exponentially greater capability. When DoD buys a VTC system on LPTA, it gets 2015 technology at 2015 prices while adversaries field AI-enhanced systems. LPTA incentivizes lowest cost, not lethality. DFARS 215.101-2-70 already restricts LPTA for certain acquisitions, but enforcement is inconsistent.",
+    recommendation: "Establish a class deviation prohibiting LPTA for any acquisition designated as technology, software, AI/ML, cybersecurity, or C4ISR. Require Best Value Tradeoff as the default source selection methodology for these categories. Allow LPTA only for true commodities with written justification. This shifts the incentive structure from cheapest bidder to most capable solution, directly supporting the fielding velocity objective.",
+    impact: "high",
+    eo_alignment: "EO 14265: Field technology at rate that outpaces adversaries · Arsenal of Freedom: Modernization velocity",
+    timeSaved: "Shifts incentive from cost to capability",
+    warfighterImpact: "Best technology, not cheapest technology"
+  },
+  {
+    number: 10,
+    title: "Create 'Wartime Surge' Contracting Authority — Expedited Award for Critical Capabilities",
+    clauses: ["FAR 6.302-2", "FAR 18.001", "DFARS 218.270"],
+    clauseAction: ["modify", "modify", "modify"],
+    description: "Current unusual and compelling urgency authority (FAR 6.302-2) still requires J&A documentation, competition plans, and multi-level approval chains that can take 30-60 days. For a department on a 'wartime footing' (Secretary Hegseth's directive), this is too slow. Existing emergency provisions in FAR Part 18 are designed for natural disasters, not sustained great power competition. The Secretary's strategy calls for putting the 'entire acquisition system on a wartime footing.'",
+    recommendation: "Establish a new contracting authority — 'Wartime Surge Acquisition' — for capabilities identified on a Secretary-maintained Critical Capabilities List. This authority would permit: (1) Award within 15 days using oral presentations and simplified evaluation, (2) Streamlined J&A approved at one level below HCA, (3) Automatic application of commercial item procedures, and (4) Post-award competition plan (compete after initial capability delivery rather than before). Limits: FFP only, 1-year base period, $50M ceiling per action.",
+    impact: "critical",
+    eo_alignment: "EO 14265: Wartime footing · Arsenal of Freedom: Outpace adversaries · Secretary's directive: Maximize flexibility",
+    timeSaved: "60-120 days per critical acquisition",
+    warfighterImpact: "Critical tech to theater in weeks, not years"
+  }
+];
+
+// ================================================================
+// QUERY-SPECIFIC ANALYSIS DATABASES
+// ================================================================
+
+function getNewVendorAnalysis() {
+  return {
+    intro: `Identified <span class="highlight">23 FAR/DFARS provisions</span> that create disproportionate barriers for non-traditional defense vendors, startups, and commercial technology companies attempting to enter the defense industrial base. These barriers directly conflict with <span class="eo-ref">EO 14265</span> (Modernizing Defense Acquisitions and Spurring Innovation) and the Secretary's mandate to expand the DIB to achieve wartime surge capacity.`,
+    items: [
+      {
+        title: "Cost Accounting Standards — The #1 Startup Killer",
+        clauses: ["FAR 52.230-2", "FAR 52.230-3", "FAR 52.230-6"],
+        clauseAction: ["remove", "remove", "remove"],
+        description: "CAS compliance requires establishing separate government cost accounting systems, filing disclosure statements, and maintaining audit-ready records. Estimated startup cost: $500K–$2M. Annual maintenance: $200K+. For a Series A startup with $10M in revenue considering a $3M DoD contract, CAS makes defense work economically irrational. This is the single most cited reason commercial tech companies refuse to bid on DoD contracts.",
+        recommendation: "Exempt all firm-fixed-price contracts from CAS regardless of value (price competition provides adequate cost assurance). For cost-type contracts, raise the CAS threshold to $50M and provide a 2-year CAS compliance phase-in for first-time DoD vendors. This removes the barrier without sacrificing cost visibility on large cost-reimbursement programs.",
+        impact: "critical",
+        eo_alignment: "EO 14275 / EO 14265",
+        timeSaved: "12-18 months vendor onboarding",
+        warfighterImpact: "Opens DIB to commercial tech sector"
+      },
+      {
+        title: "Government-Unique Audit Rights Deter VC-Backed Companies",
+        clauses: ["FAR 52.215-2", "DFARS 252.215-7009", "DFARS 252.215-7010"],
+        clauseAction: ["modify", "modify", "remove"],
+        description: "DCAA audit rights clauses give the Government access to contractor books, records, and internal pricing data. For venture-backed companies, this creates existential risk — exposing cap table information, burn rates, margin structures, and IP valuation to a government audit. VCs explicitly advise portfolio companies against defense contracts with audit clauses.",
+        recommendation: "For firm-fixed-price commercial item contracts: eliminate audit rights entirely (price competition is the cost control). For cost-type: limit audit scope to direct contract costs only, with explicit protection for company-wide financial data, cap table information, and IP valuation. Add a 'commercial pricing' safe harbor: if a vendor can demonstrate commercial sales at similar prices, no further cost justification required.",
+        impact: "critical",
+        eo_alignment: "EO 14265 §3: Spur innovation in DIB",
+        timeSaved: "Removes VC funding barrier",
+        warfighterImpact: "Access to $300B+ VC-funded tech ecosystem"
+      },
+      {
+        title: "Organizational Conflict of Interest — Blocks Dual-Use Companies",
+        clauses: ["FAR 9.5", "FAR 52.209-9"],
+        clauseAction: ["modify", "modify"],
+        description: "OCI rules were designed for large primes with advisory/syseng roles. Applied to dual-use tech companies, they create impossible choices: a company that builds commercial AI and also wants to sell to DoD faces OCI restrictions that effectively bar them from either advising on requirements OR competing for production — but never both. This eliminates the companies with the deepest domain expertise.",
+        recommendation: "Create a 'Technology Provider' OCI exemption for companies whose DoD revenue is less than 30% of total revenue and whose primary business is commercial technology. Require mitigation plans rather than blanket exclusions. The commercial market provides the competitive pressure that OCI rules attempt to replicate.",
+        impact: "high",
+        eo_alignment: "EO 14265: Attract non-traditional vendors",
+        timeSaved: "Removes structural barrier",
+        warfighterImpact: "Dual-use AI/cyber companies can compete"
+      },
+      {
+        title: "Earned Value Management System Mandate for Small Programs",
+        clauses: ["DFARS 252.234-7001", "DFARS 252.234-7002"],
+        clauseAction: ["modify", "modify"],
+        description: "EVMS requirements apply to cost/incentive contracts over $20M. For a software development company accustomed to Agile methodology, being forced into a DoD EVMS (which requires detailed work breakdown structures, performance baselines, and variance analysis at the control account level) adds $500K-$1M in overhead and fundamentally conflicts with iterative development approaches.",
+        recommendation: "Exempt software, AI/ML, and rapid prototyping efforts from traditional EVMS. Accept Agile metrics (velocity, sprint completion, demo-able capability delivery) as equivalent earned value data. Raise the EVMS threshold to $100M for all contract types. Below $100M, accept contractor's existing project management system.",
+        impact: "high",
+        eo_alignment: "EO 14275: Essential to sound procurement only",
+        timeSaved: "$500K-$1M overhead per program",
+        warfighterImpact: "Software delivered at commercial speed"
+      }
+    ]
+  };
+}
+
+function getRedundancyAnalysis() {
+  return {
+    intro: `Analysis of the full FAR/DFARS clause inventory against <span class="eo-ref">EO 14275</span> criteria: provisions must be <span class="highlight">"required by statute or essential to sound procurement."</span> Identified <span class="highlight">12 clause groups</span> containing redundant, overlapping, or non-statutory provisions that should be consolidated or eliminated per the President's directive.`,
+    items: [
+      TOP_10_RFO[3], // Ethics cluster
+      TOP_10_RFO[1], // Cyber stack
+      TOP_10_RFO[7], // Supply chain triple
+      TOP_10_RFO[4], // Buy American
+      {
+        title: "Quadruple Equal Opportunity Reporting Regime",
+        clauses: ["FAR 52.222-21", "FAR 52.222-26", "FAR 52.222-35", "FAR 52.222-36", "FAR 52.222-37"],
+        clauseAction: ["modify", "modify", "modify", "modify", "remove"],
+        description: "Five separate equal opportunity clauses mandate near-identical compliance structures for general workforce, veterans, and disabled workers. Each requires affirmative action plans, record-keeping, and reporting through separate mechanisms. The underlying authority (EO 11246, VEVRAA, Section 503) could be served by a single integrated compliance framework.",
+        recommendation: "Consolidate into a single 'Equal Employment Opportunity' clause with tiered requirements by contract value. Below $1M: self-certification only. $1M-$10M: abbreviated compliance plan. Above $10M: full AAP. This reduces five compliance tracks to one while preserving the statutory protections. For new DIB entrants, this eliminates one of the most confusing aspects of proposal preparation.",
+        impact: "high",
+        eo_alignment: "EO 14275 §2: Remove provisions not essential to procurement",
+        timeSaved: "10-15 hrs per contract",
+        warfighterImpact: "Lower barrier for new vendors"
+      },
+      {
+        title: "Triplicate Payment Processing Clauses",
+        clauses: ["FAR 52.232-33", "DFARS 252.232-7003", "DFARS 252.232-7006"],
+        clauseAction: ["remove", "modify", "remove"],
+        description: "Three clauses govern one activity: getting paid. FAR mandates EFT via SAM, DFARS requires electronic submission through WAWF/iRAPT, and -7006 provides WAWF instructions. A single properly configured payment system satisfies all three, yet vendors must respond to three separate clauses.",
+        recommendation: "Consolidate into one DFARS clause: 'DoD Payment Processing' that covers SAM registration, WAWF submission, and EFT — all in one place. Remove FAR 52.232-33 as duplicative for DoD contracts where DFARS payment clause applies.",
+        impact: "medium",
+        eo_alignment: "EO 14275: Streamline procurement",
+        timeSaved: "6-10 hrs initial setup",
+        warfighterImpact: "Faster vendor payment = healthier DIB cash flow"
+      }
+    ]
+  };
+}
+
+function getLethalityAnalysis() {
+  return {
+    intro: `Analysis focused on the Secretary's three key objectives: <span class="highlight">(1) Field technology at a rate that outpaces adversaries, (2) Increase production capacity for wartime surge, (3) Put the acquisition system on a wartime footing.</span> The following FAR/DFARS provisions are the primary regulatory obstacles to achieving these objectives.`,
+    items: [
+      TOP_10_RFO[9], // Wartime Surge authority
+      TOP_10_RFO[8], // LPTA to Best Value
+      TOP_10_RFO[2], // Fast Lane
+      {
+        title: "Protest System Delays — 100-Day Holds on Critical Capability",
+        clauses: ["FAR 33.103", "FAR 33.104", "FAR 52.233-3"],
+        clauseAction: ["modify", "modify", "modify"],
+        description: "GAO protests impose automatic 100-day stays on contract performance. For a department on a wartime footing, a competitor's protest can delay critical capability delivery by 3+ months. In FY2024, over 2,100 protests were filed at GAO. The protest system, designed for peacetime fairness, becomes a weapon against speed in an adversarial environment.",
+        recommendation: "For acquisitions on the Critical Capabilities List: (1) Allow override of automatic stay with HCA determination that delay harms national security, (2) Require protesters to post a bond equal to 1% of contract value (deterring frivolous protests), (3) Limit post-award protest window to 5 days (from current 10). Preserve the protest right but remove its use as a competitive delay tactic for warfighting capabilities.",
+        impact: "critical",
+        eo_alignment: "Arsenal of Freedom: Speed is lethality",
+        timeSaved: "100+ days per protested action",
+        warfighterImpact: "Critical capabilities not held hostage"
+      },
+      {
+        title: "Excessive Source Selection Documentation Requirements",
+        clauses: ["FAR 15.303", "FAR 15.305", "FAR 15.308"],
+        clauseAction: ["modify", "modify", "modify"],
+        description: "Current source selection requires detailed evaluation documentation, formal rating narratives, comparative analysis, and multi-level review boards. For a 'best value' procurement of a $5M technology solution, the evaluation documentation alone can take 60-90 days to produce. Meanwhile, adversaries are fielding equivalent capabilities through streamlined state procurement.",
+        recommendation: "For technology acquisitions under $25M: permit oral evaluation boards with documented conclusions (not detailed narratives), allow single-phase evaluations, and authorize the SSA to make award decisions based on brief written summaries rather than comprehensive rating volumes. Pair with authority for oral presentations in lieu of written proposals — vendors demo capability rather than writing about it.",
+        impact: "high",
+        eo_alignment: "Arsenal of Freedom: Outpace adversaries through speed",
+        timeSaved: "30-60 days per source selection",
+        warfighterImpact: "Award decisions in weeks, not months"
+      },
+      {
+        title: "Mandatory Milestone Decision Reviews Delay Rapid Fielding",
+        clauses: ["DFARS 252.242-7005", "DoDI 5000.02"],
+        clauseAction: ["modify", "modify"],
+        description: "The DoD 5000 series acquisition framework requires sequential milestone reviews (MS A → MS B → MS C → FRP) that can span 3-7 years for a major system. While appropriate for shipbuilding, applying this framework to software and AI capabilities — which have 6-month commercial development cycles — is fundamentally incompatible with the speed required to maintain technological superiority.",
+        recommendation: "Establish a 'Rapid Capability Pathway' exemption from traditional milestone reviews for software, AI/ML, cybersecurity, and electronic warfare capabilities. Replace milestones with continuous authority to proceed based on demonstrated capability (working demos, operational tests, user feedback). Adopt the Software Acquisition Pathway (DoDI 5000.87) as the DEFAULT for all technology programs, with traditional 5000.02 reserved for major hardware platforms only.",
+        impact: "high",
+        eo_alignment: "EO 14265: Field technology faster · Arsenal of Freedom: Speed = lethality",
+        timeSaved: "1-3 years per program",
+        warfighterImpact: "Capability delivered at commercial pace"
+      }
+    ]
+  };
+}
+
+function getOnboardingAnalysis() {
+  return {
+    intro: `Mapped the complete new-vendor onboarding journey through FAR/DFARS requirements. A first-time DoD vendor must navigate <span class="highlight">37 distinct compliance requirements</span> before receiving their first contract dollar. Estimated time from "decision to pursue DoD work" to "first contract award": <span class="highlight">14-24 months</span>. Target: <span class="highlight">90 days</span>.`,
+    items: [
+      {
+        title: "SAM.gov Registration — 23 Representations and Certifications",
+        clauses: ["FAR 52.204-7", "FAR 52.204-13", "FAR 52.204-18"],
+        clauseAction: ["modify", "modify", "modify"],
+        description: "SAM.gov registration requires responding to 23 separate representations covering everything from felony convictions to tax delinquency to small business size. Many questions are duplicative of state business registration. The system itself is notoriously difficult to navigate, with a 4-8 week processing time and frequent rejections for minor errors. This is often the first interaction a tech company has with defense procurement — and it's adversarial.",
+        recommendation: "Reduce SAM.gov representations to the 8 that are required by statute. Accept state business registration data via API integration rather than requiring manual re-entry. Implement 48-hour expedited processing for companies already registered with state and federal business databases. Create a 'SAM Express' registration for commercial companies pursuing only firm-fixed-price opportunities.",
+        impact: "high",
+        eo_alignment: "EO 14275: Remove non-statutory requirements",
+        timeSaved: "4-8 weeks → 48 hours",
+        warfighterImpact: "First impression of DoD goes from hostile to welcoming"
+      },
+      {
+        title: "DCAA Pre-Award Audit — 6-Month Gate Before First Dollar",
+        clauses: ["FAR 52.215-2", "DFARS 252.242-7006"],
+        clauseAction: ["modify", "modify"],
+        description: "For cost-type contracts, DCAA requires a pre-award accounting system audit before contract award. Current DCAA backlog: 6-12 months for new vendors. A startup that wins a competitive evaluation still can't start work until DCAA audits their books. Many small vendors have been approved for award only to lose the opportunity because DCAA couldn't schedule the audit in time.",
+        recommendation: "For firm-fixed-price contracts: eliminate pre-award audit entirely (not applicable by regulation, but frequently imposed by policy). For cost-type under $10M: accept a CPA-prepared financial statement in lieu of DCAA audit. For all others: institute a 30-day DCAA audit timeline with automatic adequacy determination if DCAA fails to complete on schedule. No vendor should lose an award due to audit backlog.",
+        impact: "critical",
+        eo_alignment: "EO 14265: Remove barriers to DIB entry",
+        timeSaved: "6-12 months → 30 days",
+        warfighterImpact: "Awarded vendors start performing immediately"
+      },
+      {
+        title: "Facility Clearance Processing — 12-18 Month Wait",
+        clauses: ["DFARS 204.404-70", "NISPOM"],
+        clauseAction: ["modify", "modify"],
+        description: "Defense contractors handling classified information need Facility Clearances (FCL). Current processing: 12-18 months for a new company. This means a cybersecurity startup with cleared founders cannot begin classified work for over a year after winning a contract. Adversaries do not have an 18-month clearance processing delay.",
+        recommendation: "Establish 'Provisional Facility Clearance' for companies whose key personnel already hold active clearances. If 2+ company officers have TS/SCI clearances from prior service, grant provisional FCL within 30 days while full processing continues. Allow classified work to begin under the personal clearances of key personnel with an approved COMSEC plan. This bridges the gap between contract award and full FCL.",
+        impact: "high",
+        eo_alignment: "Arsenal of Freedom: Speed is lethality",
+        timeSaved: "12-18 months → 30 days provisional",
+        warfighterImpact: "Cleared personnel working immediately"
+      },
+      {
+        title: "Compliance Certification Stack — Death by a Thousand Checkboxes",
+        clauses: ["FAR 52.209-5", "FAR 52.209-11", "FAR 52.222-22", "FAR 52.225-6"],
+        clauseAction: ["remove", "remove", "remove", "remove"],
+        description: "Beyond SAM.gov representations, vendors must provide separate certifications for: debarment/suspension, criminal history, previous contract terminations, unpaid taxes, equal opportunity compliance, and Buy American status. Each is a separate form with separate deadlines and separate penalties for error. Most of this data is already in SAM.gov or available through FAPIIS.",
+        recommendation: "Establish a single 'Vendor Compliance Certification' that incorporates all required representations into one document. Auto-populate from SAM.gov data. Require only annual re-certification rather than per-proposal submission. Reduce 12 separate certifications to 1 form with 1 submission process.",
+        impact: "medium",
+        eo_alignment: "EO 14275: Remove provisions not essential to procurement",
+        timeSaved: "10-15 hrs per proposal",
+        warfighterImpact: "Vendors focus on capability, not paperwork"
+      }
+    ]
+  };
+}
+
+function getSurgeAnalysis() {
+  return {
+    intro: `The Secretary's second key objective: <span class="highlight">"Increase production capacity to deliver wartime surge capacity for key capabilities."</span> Current FAR/DFARS provisions constrain surge capacity through restrictive competition requirements, inflexible contract structures, and barriers to rapid production scale-up.`,
+    items: [
+      TOP_10_RFO[9], // Wartime Surge authority
+      {
+        title: "Indefinite-Delivery Contract Ceiling Limitations",
+        clauses: ["FAR 16.504", "DFARS 216.504"],
+        description: "IDIQ contracts have fixed ceiling values that cannot be increased without modification and often re-competition. When surge demand exceeds the ceiling, the Government must award new contracts — a process that takes 6-12 months. In a surge scenario, production lines sit idle while procurement catches up.",
+        recommendation: "For contracts supporting items on the Critical Capabilities List: authorize automatic 100% ceiling increases upon HCA determination of surge need. Eliminate the requirement for J&A when increasing ceiling on existing competed IDIQs. Allow exercise of surge options without re-evaluation when the contractor has demonstrated satisfactory performance.",
+        impact: "critical",
+        eo_alignment: "EO 14265: Wartime surge capacity",
+        timeSaved: "6-12 months per ceiling increase",
+        warfighterImpact: "Continuous production during surge"
+      },
+      {
+        title: "Multi-Year Procurement Restrictions",
+        clauses: ["FAR 17.1", "DFARS 217.170"],
+        clauseAction: ["modify", "modify"],
+        description: "Multi-year procurement provides the contract stability needed for vendors to invest in production capacity, hire workers, and build inventory. But current approval requirements (specific Congressional authorization, savings threshold demonstrations, stable requirements certification) make multi-year extremely difficult to execute. Vendors won't invest in surge capacity for 1-year contracts.",
+        recommendation: "Expand multi-year authority to all production contracts for items on the Critical Capabilities List without individual Congressional authorization. Accept a lower savings threshold (5% vs current 10%) recognizing that production stability itself delivers value. Allow multi-year for commercial items purchased in quantity. This gives vendors the contract certainty needed to invest in production capacity.",
+        impact: "high",
+        eo_alignment: "Arsenal of Freedom: Industrial base on wartime footing",
+        timeSaved: "Production investment certainty",
+        warfighterImpact: "Vendors invest in capacity, not just current orders"
+      },
+      {
+        title: "Domestic Source Restrictions Limit Surge Manufacturing",
+        clauses: ["FAR 52.225-1", "DFARS 252.225-7001", "10 U.S.C. §4862"],
+        clauseAction: ["modify", "modify", "modify"],
+        description: "Buy American and Berry Amendment restrictions limit manufacturing to domestic sources. In a genuine surge scenario, domestic production capacity is finite. Allied nations with compatible manufacturing capabilities (UK, Australia, Japan, South Korea) are prohibited from producing surge quantities of many defense items.",
+        recommendation: "Establish 'Allied Surge Production' authority: when domestic capacity is insufficient to meet surge demand, automatically extend production authorization to AUKUS, Five Eyes, and qualified NATO allies. Require reciprocal quality standards but eliminate country-of-origin restrictions for surge quantities. Pre-negotiate allied production agreements in peacetime for activation during surge.",
+        impact: "critical",
+        eo_alignment: "EO 14265: Wartime surge capacity · Arsenal of Freedom: Allied industrial base",
+        timeSaved: "Months of production delay",
+        warfighterImpact: "Global allied production in surge scenario"
+      }
+    ]
+  };
+}
+
+function getNonStatutoryAnalysis() {
+  return {
+    intro: `<span class="eo-ref">EO 14275</span> mandates that the FAR <span class="highlight">"should only contain provisions required by statute or essential to sound procurement, and any FAR provisions that do not advance these objectives should be removed."</span> Analysis identified the following high-impact clauses that are <span class="highlight">NOT required by statute</span> and whose removal would significantly reduce vendor burden while maintaining procurement integrity.`,
+    items: [
+      {
+        title: "Drug-Free Workplace Certification — Duplicative of Federal Law",
+        clauses: ["FAR 52.223-6"],
+        clauseAction: ["remove"],
+        description: "The Drug-Free Workplace Act (41 U.S.C. §8101) already applies to all federal contractors as a matter of law. The FAR clause merely restates the statutory requirement. Contractors comply with the law regardless of whether the clause appears in their contract. Including it adds a compliance checkbox without adding compliance behavior.",
+        recommendation: "Remove from contracts entirely. The statute self-executes. Include a reference to the Drug-Free Workplace Act in the SAM.gov representations (one checkbox) rather than flowing a separate clause into every contract. Estimated clause reduction across all DoD contracts: ~200,000 clause instances per year.",
+        impact: "medium",
+        eo_alignment: "EO 14275 §2: Not essential to sound procurement",
+        timeSaved: "Administrative reduction",
+        warfighterImpact: "Fewer pages, faster processing"
+      },
+      {
+        title: "Encouraging Contractor Policies to Ban Text Messaging While Driving",
+        clauses: ["FAR 52.223-18"],
+        clauseAction: ["remove"],
+        description: "This clause asks contractors to 'encourage' policies against texting while driving. It has no enforcement mechanism, no compliance standard, and no reporting requirement. Texting while driving is already illegal in 49 states and D.C. This is the archetype of a FAR provision that does not advance sound procurement objectives.",
+        recommendation: "Remove immediately via class deviation. This clause exists because of a 2009 Executive Order (EO 13513) that has been superseded by state laws nationwide. Its removal is the lowest-risk, clearest example of EO 14275 implementation. Signal to industry that the RFO is real by removing obviously unnecessary provisions quickly.",
+        impact: "low",
+        eo_alignment: "EO 14275 §2: Does not advance procurement objectives",
+        timeSaved: "Symbolic + administrative",
+        warfighterImpact: "Demonstrates seriousness of reform"
+      },
+      {
+        title: "Printed Double-Sided on Recycled Paper",
+        clauses: ["FAR 52.204-4"],
+        clauseAction: ["remove"],
+        description: "Requires that documents exceeding 100 pages be printed double-sided on recycled paper. In 2026, most contract documents are electronic. This clause is a relic of paper-based procurement and adds a compliance obligation that is both irrelevant and unenforceable in a digital acquisition environment.",
+        recommendation: "Remove entirely. Replace with a one-sentence statement in FAR Part 4 encouraging electronic document submission. This clause appears in hundreds of thousands of active contracts despite being functionally obsolete.",
+        impact: "low",
+        eo_alignment: "EO 14275 §2: Not essential to sound procurement",
+        timeSaved: "Administrative reduction",
+        warfighterImpact: "Demonstrates commitment to modernization"
+      },
+      {
+        title: "Computer Generated Forms",
+        clauses: ["FAR 52.253-1"],
+        clauseAction: ["remove"],
+        description: "This clause authorizes contractors to use computer-generated versions of government forms. In 2026, the idea that contractors need explicit contractual permission to use computers to generate forms is absurd. Yet this clause appears in virtually every DoD contract.",
+        recommendation: "Remove immediately. This is self-evidently unnecessary and its continued inclusion undermines the credibility of the entire FAR as a modern procurement framework. Every unnecessary clause that remains signals to non-traditional vendors that DoD procurement is not serious about reform.",
+        impact: "low",
+        eo_alignment: "EO 14275 §2: Not essential to sound procurement",
+        timeSaved: "Symbolic",
+        warfighterImpact: "Signals modernization to commercial sector"
+      },
+      {
+        title: "Contractor Employee Whistleblower Rights — Duplicated by Statute",
+        clauses: ["FAR 52.203-17", "DFARS 252.203-7002"],
+        clauseAction: ["remove", "remove"],
+        description: "Both FAR and DFARS contain whistleblower clauses that restate protections already provided by 10 U.S.C. §4701, 41 U.S.C. §4712, and the False Claims Act qui tam provisions. Employees have whistleblower rights regardless of whether a clause appears in the contract. The clauses add compliance training and posting requirements without adding actual protection.",
+        recommendation: "Remove both clauses. Replace with a SAM.gov representation acknowledging statutory whistleblower obligations. The statutory protections are stronger than the contractual ones and apply regardless of clause inclusion. This reduces two clauses across all DoD contracts with zero reduction in actual whistleblower protection.",
+        impact: "medium",
+        eo_alignment: "EO 14275 §2: Required by statute — but the statute applies without the clause",
+        timeSaved: "Training and posting overhead",
+        warfighterImpact: "Cleaner contracts, same protections"
+      }
+    ]
+  };
+}
+
+function getTechModernizationAnalysis() {
+  return {
+    intro: `The Secretary's first key objective: <span class="highlight">"Field technology and modernizing systems at a rate that outpaces our adversaries."</span> Current regulatory framework was designed for hardware procurement cycles of 7-15 years. Software and AI move at 6-month cycles. Here are the provisions that must change to achieve technology superiority.`,
+    items: [
+      TOP_10_RFO[6], // IP/Data rights
+      TOP_10_RFO[8], // LPTA to Best Value
+      {
+        title: "Technical Data Deliverable Requirements — Blocks Agile Development",
+        clauses: ["DFARS 252.227-7013", "CDRL DI-MISC-80711"],
+        clauseAction: ["modify", "modify"],
+        description: "Traditional technical data deliverable requirements (CDRLs) demand formal documentation packages at fixed milestones — system design documents, interface specifications, test plans, user manuals — in prescribed DoD formats. Agile software development produces working code, not waterfall documentation. Forcing agile teams to produce traditional CDRLs either slows development to a crawl or produces fiction.",
+        recommendation: "For software and AI acquisitions: accept living documentation (wikis, READMEs, API docs, automated test results) as equivalent to traditional CDRLs. Replace milestone-based documentation with continuous documentation tied to sprint deliveries. Accept the codebase itself as the primary technical data deliverable, with Government Purpose Rights to the repository.",
+        impact: "high",
+        eo_alignment: "EO 14265: Field technology faster",
+        timeSaved: "40-60% of documentation overhead",
+        warfighterImpact: "Software delivered at startup speed"
+      },
+      {
+        title: "Prohibition on Other Than Full and Open Competition — Blocks Sole-Source Innovation",
+        clauses: ["FAR 6.302", "DFARS 206.302"],
+        clauseAction: ["modify", "modify"],
+        description: "When only one company has a unique AI capability that DoD needs, the J&A (Justification and Approval) process for sole-source award requires 30-90 days of documentation and multi-level approval. For genuinely unique technologies where competition doesn't exist, this process delays capability delivery without achieving its purpose (ensuring competition). Meanwhile, the company may accept a commercial contract and deprioritize DoD.",
+        recommendation: "Create an expedited J&A process for 'Unique Technology' sole-source actions: 5-page limit, 15-day approval at one level below HCA, and automatic FAR Part 12 commercial procedures. Require only a brief market survey (not a full Sources Sought) to confirm uniqueness. Pair with a requirement to compete follow-on production after initial capability delivery.",
+        impact: "high",
+        eo_alignment: "Arsenal of Freedom: Speed to field",
+        timeSaved: "30-60 days per unique tech acquisition",
+        warfighterImpact: "Unique capabilities acquired before competitors emerge"
+      },
+      {
+        title: "Testing and Evaluation Requirements — Years Added to Software Programs",
+        clauses: ["DFARS 252.246-7001", "DoDI 5000.89"],
+        clauseAction: ["modify", "modify"],
+        description: "Operational Test and Evaluation (OT&E) requirements designed for weapons systems add 12-24 months to software program schedules. A cybersecurity tool that could be deployed in 90 days sits in test for a year while adversaries exploit the vulnerability it was designed to address.",
+        recommendation: "For software and AI: replace sequential OT&E with continuous testing authority. Accept DevSecOps pipeline test results (automated security scanning, integration testing, user acceptance) as meeting OT&E requirements. Allow 'operational test' to occur through monitored deployment to a limited user base (canary deployment) rather than formal test events. If it works in production, it passes the test.",
+        impact: "critical",
+        eo_alignment: "EO 14265: Outpace adversaries",
+        timeSaved: "12-24 months per program",
+        warfighterImpact: "Cybersecurity and AI tools deployed at threat speed"
+      }
+    ]
+  };
+}
+
+// ================================================================
+// QUERY PROCESSOR
+// ================================================================
+
+function processQuery(query) {
+  const q = query.toLowerCase().trim();
+
+  if (q.match(/new vendor|startup|non.?traditional|commercial (tech|compan)|barrier|entry|enter|dib entry|small business entry/)) {
+    return { type: 'vendors', data: getNewVendorAnalysis() };
+  }
+  if (q.match(/redundan|overlap|duplicat|consolidat|remove clause|elimination/)) {
+    return { type: 'redundancy', data: getRedundancyAnalysis() };
+  }
+  if (q.match(/lethal|speed|velocity|outpace|adversar|field tech|warfight|faster|accelerat|rapid/)) {
+    return { type: 'lethality', data: getLethalityAnalysis() };
+  }
+  if (q.match(/onboard|burden|registration|compliance burden|paperwork|bureaucra|red tape/)) {
+    return { type: 'onboarding', data: getOnboardingAnalysis() };
+  }
+  if (q.match(/surge|production|capacity|wartime|industrial base|arsenal/)) {
+    return { type: 'surge', data: getSurgeAnalysis() };
+  }
+  if (q.match(/non.?statut|not required|remove|eo 14275|common sense|should be removed|unnecessary/)) {
+    return { type: 'nonstatutory', data: getNonStatutoryAnalysis() };
+  }
+  if (q.match(/tech|modern|software|ai |artificial|innovat|digital|agile|devops|cyber/)) {
+    return { type: 'techmod', data: getTechModernizationAnalysis() };
+  }
+  if (q.match(/cyber|cmmc|nist|800-171|safeguard/)) {
+    return { type: 'redundancy', data: getRedundancyAnalysis() };
+  }
+  if (q.match(/ip |data right|intellectual|proprietary/)) {
+    return { type: 'techmod', data: getTechModernizationAnalysis() };
+  }
+  if (q.match(/buy american|trade|domestic|ally|allied|aukus|nato/)) {
+    return { type: 'surge', data: getSurgeAnalysis() };
+  }
+  if (q.match(/protest|gao|stay|challenge/)) {
+    return { type: 'lethality', data: getLethalityAnalysis() };
+  }
+
+  // Default: show help
+  return { type: 'help', data: null };
+}
+
+// ================================================================
+// RENDERING
+// ================================================================
+
+function renderCard(item, index) {
+  const delay = index * 0.07;
+  const impactClass = item.impact === 'critical' ? 'card-critical' :
+                      item.impact === 'high' ? 'card-high' :
+                      item.impact === 'medium' ? 'card-medium' :
+                      item.impact === 'optimize' ? 'card-optimize' : 'card-low';
+
+  const badgeClass = item.impact === 'critical' ? 'badge-critical' :
+                     item.impact === 'high' ? 'badge-high' :
+                     item.impact === 'medium' ? 'badge-medium' :
+                     item.impact === 'optimize' ? 'badge-optimize' : 'badge-low';
+
+  const badgeText = item.impact.toUpperCase() + (item.impact !== 'optimize' ? ' IMPACT' : '');
+
+  const clauseTags = (item.clauses || []).map((c, i) => {
+    const action = item.clauseAction ? item.clauseAction[i] : null;
+    const tagClass = action === 'remove' ? 'clause-tag tag-remove' :
+                     action === 'modify' ? 'clause-tag tag-modify' : 'clause-tag';
+    return `<span class="${tagClass}">${c}</span>`;
+  }).join('');
+
+  return `
+    <div class="suggestion-card ${impactClass}" style="animation-delay: ${delay}s">
+      <div class="card-header">
+        <span class="card-number">${String(item.number || index + 1).padStart(2, '0')}</span>
+        <div class="card-badges">
+          <span class="card-badge ${badgeClass}">${badgeText}</span>
+          ${item.eo_alignment ? `<span class="card-badge badge-eo">EO ALIGNED</span>` : ''}
+        </div>
+      </div>
+      <div class="card-title">${item.title}</div>
+      ${clauseTags ? `<div class="card-clauses">${clauseTags}</div>` : ''}
+      <div class="card-body">${item.description}</div>
+      <div class="card-recommendation">
+        <strong>RFO PHASE 2 RECOMMENDATION →</strong> ${item.recommendation}
+      </div>
+      <div class="card-impact">
+        ${item.timeSaved ? `<div class="impact-item">⏱ Est. savings: <span>${item.timeSaved}</span></div>` : ''}
+        ${item.warfighterImpact ? `<div class="impact-item">⚔ Warfighter impact: <span>${item.warfighterImpact}</span></div>` : ''}
+        ${item.eo_alignment ? `<div class="impact-item">📋 <span>${item.eo_alignment}</span></div>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderResults(result) {
+  const container = document.getElementById('resultsContainer');
+
+  if (result.type === 'help') {
+    container.innerHTML = `
+      <div class="ai-response">
+        <div class="response-header">◆ QUERY GUIDANCE</div>
+        <div class="response-body">
+          <p>This analyzer supports queries aligned with the RFO Phase 2 objectives. Try:</p>
+          <p>• <span class="highlight">"barriers for new vendors and startups"</span> — provisions that block non-traditional DIB entry</p>
+          <p>• <span class="highlight">"redundant clauses for removal"</span> — overlapping provisions per EO 14275 criteria</p>
+          <p>• <span class="highlight">"speed to lethality"</span> — provisions that slow technology fielding</p>
+          <p>• <span class="highlight">"reduce onboarding burden"</span> — first-time vendor compliance maze</p>
+          <p>• <span class="highlight">"wartime surge capacity"</span> — production and scaling constraints</p>
+          <p>• <span class="highlight">"clauses not required by statute"</span> — non-statutory provisions for removal per EO 14275</p>
+          <p>• <span class="highlight">"technology modernization blockers"</span> — provisions incompatible with software/AI acquisition</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const typeLabels = {
+    vendors: "New Vendor & Startup Barrier Analysis",
+    redundancy: "Redundant Clause Identification — EO 14275 Aligned",
+    lethality: "Speed to Lethality — Regulatory Obstacles",
+    onboarding: "Vendor Onboarding Burden Analysis",
+    surge: "Wartime Surge Capacity — Regulatory Constraints",
+    nonstatutory: "Non-Statutory Provisions for Removal — EO 14275",
+    techmod: "Technology Modernization — Regulatory Blockers"
+  };
+
+  container.innerHTML = `
+    <div class="ai-response">
+      <div class="response-header">◆ ${typeLabels[result.type]}</div>
+      <div class="response-body">${result.data.intro}</div>
+    </div>
+    <div class="section-label">${typeLabels[result.type]} — Recommendations</div>
+    <div class="results-grid">
+      ${result.data.items.map((item, i) => renderCard({...item, number: i + 1}, i)).join('')}
+    </div>`;
+}
+
+function runQuery(query) {
+  const input = document.getElementById('searchInput');
+  input.value = query;
+  const container = document.getElementById('resultsContainer');
+  container.innerHTML = `
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Analyzing: "${query}" against EO 14275 / EO 14265 criteria...</div>
+    </div>`;
+  setTimeout(() => {
+    const result = processQuery(query);
+    renderResults(result);
+  }, 700);
+}
+
+// ================================================================
+// INITIAL LOAD — Top 10 Suggestions
+// ================================================================
+
+function loadInitialAnalysis() {
+  setTimeout(() => {
+    const container = document.getElementById('resultsContainer');
+    container.innerHTML = `
+      <div class="ai-response">
+        <div class="response-header">◆ RFO PHASE 2 — TOP 10 REGULATORY REFORM RECOMMENDATIONS</div>
+        <div class="response-body">
+          <p>Automated analysis of FAR Parts 1–53 and DFARS 201–253 against the criteria established by <span class="eo-ref">Executive Order 14275</span> (Restoring Common Sense to Federal Procurement) and <span class="eo-ref">Executive Order 14265</span> (Modernizing Defense Acquisitions and Spurring Innovation in the Defense Industrial Base).</p>
+          <p>Each recommendation below identifies specific FAR/DFARS provisions that impede the Secretary's three key objectives: <span class="highlight">(1) fielding technology faster than adversaries, (2) enabling wartime surge production capacity, and (3) establishing a wartime acquisition footing.</span> Clauses marked in <span style="color:#ff5252;text-decoration:line-through;">red strikethrough</span> are recommended for removal. Clauses in <span style="color:#ffab00;">amber</span> are recommended for modification.</p>
+          <p>Submitted for consideration under RFO Phase 2 input per the Under Secretary's letter of February 10, 2026.</p>
+        </div>
+      </div>
+      <div class="section-label">Top 10 Recommendations — Ranked by Warfighter Impact</div>
+      <div class="results-grid">
+        ${TOP_10_RFO.map((item, i) => renderCard(item, i)).join('')}
+      </div>`;
+  }, 1800);
+}
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.trim()) {
+    runQuery(this.value.trim());
+  }
+});
+
+loadInitialAnalysis();
+</script>
+</body>
+</html>
